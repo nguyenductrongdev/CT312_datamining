@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-7 mx-auto">
+                <h1 class="text-center text-info">Enter infomation for rice</h1>
+                <form class="shadow-lg p-5" action="predict" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="txtArea">Area:</label>
+                        <input type="text" class="form-control" id="txtArea" aria-describedby="emailHelp"
+                            name="txtArea">
+                        <small id="arenaHelp" class="form-text text-muted">Returns the number of pixels within the
+                            boundaries of
+                            the rice grain.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtPerimeter">Perimeter:</label>
+                        <input type="text" class="form-control" id="txtPerimeter" name="txtPerimeter">
+                        <small id="arenaHelp" class="form-text text-muted">Calculates the circumference by calculating
+                            the
+                            distance between pixels around the boundaries of the rice grain.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtMajorAxisLength">Major Axis Length:</label>
+                        <input type="text" class="form-control" id="txtMajorAxisLength" name="txtMajorAxisLength">
+                        <small id="arenaHelp" class="form-text text-muted">The longest line that can be drawn on the
+                            rice grain,
+                            i.e. the main axis distance, gives.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtMinorAxisLength">Minor Axis Length:</label>
+                        <input type="text" class="form-control" id="txtMinorAxisLength" name="txtMinorAxisLength">
+                        <small id="arenaHelp" class="form-text text-muted">The shortest line that can be drawn on the
+                            rice
+                            grain, i.e. the small axis distance, gives.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtEccentricity">Eccentricity:</label>
+                        <input type="text" class="form-control" id="txtEccentricity" name="txtEccentricity">
+                        <small id="arenaHelp" class="form-text text-muted">It measures how round the ellipse, which has
+                            the same
+                            moments as the rice grain, is.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtConvexArea">Convex Area:</label>
+                        <input type="text" class="form-control" id="txtConvexArea" name="txtConvexArea">
+                        <small id="arenaHelp" class="form-text text-muted">Returns the pixel count of the smallest
+                            convex shell
+                            of the region formed by the rice grain.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtExtent">Extent:</label>
+                        <input type="text" class="form-control" id="txtExtent" name="txtExtent">
+                        <small id="arenaHelp" class="form-text text-muted">Returns the ratio of the regionformed by the
+                            rice
+                            grain to the bounding box pixels.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary form-control">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
