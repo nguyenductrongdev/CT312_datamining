@@ -13,8 +13,9 @@
     <div class="container">
         <div class="row">
             <div class="col-7 mx-auto">
+                <!--  -->
                 <h1 class="text-center text-info">Enter infomation for rice</h1>
-                <form class="shadow-lg p-5" action="predict" method="POST">
+                <form class="shadow-lg p-5" action="predict" method="POST" id="frm">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="txtArea">Area:</label>
@@ -66,7 +67,20 @@
                             rice
                             grain to the bounding box pixels.</small>
                     </div>
-                    <button type="submit" class="btn btn-primary form-control">Submit</button>
+                    <input type="hidden" name="type">
+                    {% comment %} DT , bayes, SVM {% endcomment %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button class="btn btn-primary form-control" id="btn-DT">Decision
+                                Tree</button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary form-control" id="btn-NB">Naive Bayes</button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary form-control" id="btn-SVM">SVM</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -75,6 +89,43 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            const type = $('input[name="type"]');
+
+            $('#btn-DT').click(function () {
+                type.val("1");
+            });
+
+            $('#btn-NB').click(function () {
+                type.val("2");
+            });
+
+            $('#btn-SVM').click(function () {
+                type.val("3");
+            });
+
+            $('#frm').submit(function () {
+                console.log('hihi');
+                $.each($('#frm input'), function () {
+                    if (`${$(this).val()}`.length !== `${parseFloat($(this).val())}`.length) {
+                        console.log('red');
+                        $(this).css({
+                            'outline': 'solid 1px red'
+                        });
+                    } else {
+                        console.log('gren');
+                        $(this).css({
+                            'outline': 'solid 1px green'
+                        });
+                    }
+                });
+            });
+
+        });
+
+    </script>
+
 </body>
 
 </html>
