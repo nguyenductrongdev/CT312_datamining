@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict from csv file</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 mx-auto w-100">
+                <h1 class="text-center text-info">Result</h1>
+                <a href="/download/result.csv" class="btn btn-success btn-download d-block m-5 ml-auto w-25" download>
+                    <i class="fas fa-download"></i>
+                </a>
+                <table class="table w-100 mx-auto">
+                    <thead>
+                        <tr>
+                            <th>AREA</th>
+                            <th>PERIMETER</th>
+                            <th>MAJORAXIS</th>
+                            <th>MINORAXIS</th>
+                            <th>ECCENTRICITY</th>
+                            <th>CONVEX_AREA</th>
+                            <th>EXTENT</th>
+                            <th>CLASS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in rows %}
+                        <tr>
+                            <td>{{ r.AREA }}</td>
+                            <td>{{ r.PERIMETER }}</td>
+                            <td>{{ r.MAJORAXIS }}</td>
+                            <td>{{ r.MINORAXIS }}</td>
+                            <td>{{ r.ECCENTRICITY }}</td>
+                            <td>{{ r.CONVEX_AREA }}</td>
+                            <td>{{ r.EXTENT }}</td>
+                            <td>{{ r.CLASS }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

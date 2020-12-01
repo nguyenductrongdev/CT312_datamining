@@ -19,5 +19,6 @@ from django.urls import include
 
 urlpatterns = [
     path('riceclassify/', include('riceclassify.urls')),
+    path('', include('riceclassify.urls')),
     path('admin/', admin.site.urls),
 ]

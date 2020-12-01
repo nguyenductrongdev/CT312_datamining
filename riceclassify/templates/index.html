@@ -4,126 +4,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Rice predictor</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 </head>
 
 <body>
-
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-7 mx-auto">
-                <!--  -->
-                <h1 class="text-center text-info">Enter infomation for rice</h1>
-                <form class="shadow-lg p-5" action="predict" method="POST" id="frm">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="txtArea">Area:</label>
-                        <input type="text" class="form-control" id="txtArea" aria-describedby="emailHelp"
-                            name="txtArea">
-                        <small id="arenaHelp" class="form-text text-muted">Returns the number of pixels within the
-                            boundaries of
-                            the rice grain.</small>
+            <div class="col-12">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link w-50  text-center" id="nav-profile-tab" data-toggle="tab" href="#nav-form" role="tab" aria-controls="nav-profile" aria-selected="false">Form</a>
+                        <a class="nav-item nav-link w-50  text-center" id="nav-contact-tab" data-toggle="tab" href="#nav-csv" role="tab" aria-controls="nav-contact" aria-selected="false">.CSV</a>
                     </div>
-                    <div class="form-group">
-                        <label for="txtPerimeter">Perimeter:</label>
-                        <input type="text" class="form-control" id="txtPerimeter" name="txtPerimeter">
-                        <small id="arenaHelp" class="form-text text-muted">Calculates the circumference by calculating
-                            the
-                            distance between pixels around the boundaries of the rice grain.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="txtMajorAxisLength">Major Axis Length:</label>
-                        <input type="text" class="form-control" id="txtMajorAxisLength" name="txtMajorAxisLength">
-                        <small id="arenaHelp" class="form-text text-muted">The longest line that can be drawn on the
-                            rice grain,
-                            i.e. the main axis distance, gives.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="txtMinorAxisLength">Minor Axis Length:</label>
-                        <input type="text" class="form-control" id="txtMinorAxisLength" name="txtMinorAxisLength">
-                        <small id="arenaHelp" class="form-text text-muted">The shortest line that can be drawn on the
-                            rice
-                            grain, i.e. the small axis distance, gives.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="txtEccentricity">Eccentricity:</label>
-                        <input type="text" class="form-control" id="txtEccentricity" name="txtEccentricity">
-                        <small id="arenaHelp" class="form-text text-muted">It measures how round the ellipse, which has
-                            the same
-                            moments as the rice grain, is.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="txtConvexArea">Convex Area:</label>
-                        <input type="text" class="form-control" id="txtConvexArea" name="txtConvexArea">
-                        <small id="arenaHelp" class="form-text text-muted">Returns the pixel count of the smallest
-                            convex shell
-                            of the region formed by the rice grain.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="txtExtent">Extent:</label>
-                        <input type="text" class="form-control" id="txtExtent" name="txtExtent">
-                        <small id="arenaHelp" class="form-text text-muted">Returns the ratio of the regionformed by the
-                            rice
-                            grain to the bounding box pixels.</small>
-                    </div>
-                    <input type="hidden" name="type">
-                    {% comment %} DT , bayes, SVM {% endcomment %}
-                    <div class="row">
-                        <div class="col-md-4">
-                            <button class="btn btn-primary form-control" id="btn-DT">Decision
-                                Tree</button>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-form" role="tabpanel">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-7 mx-auto">
+                                    <!--  -->
+                                    <h1 class="text-center text-info">Enter infomation</h1>
+                                    <form class="shadow-lg p-5" action="predict" method="POST" id="frm" novalidate>
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="txtArea">Area:</label>
+                                            <input type="text" class="form-control" id="txtArea" aria-describedby="emailHelp" name="txtArea">
+                                            <small id="arenaHelp" class="form-text text-muted">Returns the number of pixels within the
+                                            boundaries of
+                                            the rice grain.</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="txtPerimeter">Perimeter:</label>
+                                            <input type="text" class="form-control" id="txtPerimeter" name="txtPerimeter">
+                                            <small id="arenaHelp" class="form-text text-muted">Calculates the circumference by calculating
+                                            the
+                                            distance between pixels around the boundaries of the rice grain.</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="txtMajorAxisLength">Major Axis Length:</label>
+                                            <input type="text" class="form-control" id="txtMajorAxisLength" name="txtMajorAxisLength">
+                                            <small id="arenaHelp" class="form-text text-muted">The longest line that can be drawn on the
+                                            rice grain,
+                                            i.e. the main axis distance, gives.</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="txtMinorAxisLength">Minor Axis Length:</label>
+                                            <input type="text" class="form-control" id="txtMinorAxisLength" name="txtMinorAxisLength">
+                                            <small id="arenaHelp" class="form-text text-muted">The shortest line that can be drawn on the
+                                            rice
+                                            grain, i.e. the small axis distance, gives.</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="txtEccentricity">Eccentricity:</label>
+                                            <input type="text" class="form-control" id="txtEccentricity" name="txtEccentricity">
+                                            <small id="arenaHelp" class="form-text text-muted">It measures how round the ellipse, which has
+                                            the same
+                                            moments as the rice grain, is.</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="txtConvexArea">Convex Area:</label>
+                                            <input type="text" class="form-control" id="txtConvexArea" name="txtConvexArea">
+                                            <small id="arenaHelp" class="form-text text-muted">Returns the pixel count of the smallest
+                                            convex shell
+                                            of the region formed by the rice grain.</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="txtExtent">Extent:</label>
+                                            <input type="text" class="form-control" id="txtExtent" name="txtExtent">
+                                            <small id="arenaHelp" class="form-text text-muted">Returns the ratio of the regionformed by the
+                                            rice
+                                            grain to the bounding box pixels.</small>
+                                        </div>
+                                        {% comment %} DT , bayes, SVM {% endcomment %}
+                                        <button class="btn btn-primary form-control">Predict</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-primary form-control" id="btn-NB">Naive Bayes</button>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-primary form-control" id="btn-SVM">SVM</button>
+                    </div>
+                    <div class="tab-pane fade" id="nav-csv" role="tabpanel">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-7 mx-auto">
+                                    <h1 class="text-center text-info">Predict from .csv file</h1>
+                                    <form action="predict_csv" method="POST" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="fXTest">File csv</label>
+                                            <input type="file" class="form-control" name="fXTest" />
+                                        </div>
+                                        <button class="btn btn-primary form-control btn-predict">Predict</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        $(function () {
-            const type = $('input[name="type"]');
+        $(function() {
+            $('#frm').submit(function(event) {
+                let isSubmit = true;
+                $.each($('#frm input'), function() {
+                    if ($(this).attr('name') === 'csrfmiddlewaretoken') return;
 
-            $('#btn-DT').click(function () {
-                type.val("1");
-            });
-
-            $('#btn-NB').click(function () {
-                type.val("2");
-            });
-
-            $('#btn-SVM').click(function () {
-                type.val("3");
-            });
-
-            $('#frm').submit(function () {
-                console.log('hihi');
-                $.each($('#frm input'), function () {
-                    if (`${$(this).val()}`.length !== `${parseFloat($(this).val())}`.length) {
-                        console.log('red');
-                        $(this).css({
-                            'outline': 'solid 1px red'
-                        });
+                    if (isNaN(parseFloat($(this).val())) || `${$(this).val()}`.length != `${parseFloat($(this).val())}`.length) {
+                        $(this).removeClass('is-valid').addClass('is-invalid');
+                        isSubmit = false;
                     } else {
-                        console.log('gren');
-                        $(this).css({
-                            'outline': 'solid 1px green'
-                        });
+                        $(this).removeClass('is-invalid').addClass('is-valid');
                     }
                 });
+                if (!isSubmit) event.preventDefault();
+                return isSubmit;
+            });
+
+            $('.btn-predict').click(function() {
+                $('.btn-download').removeClass('disabled');
             });
 
         });
-
     </script>
 
 </body>
