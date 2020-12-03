@@ -18,16 +18,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
+from sklearn.preprocessing import StandardScaler
 
 # Doc du lieu tu file excel
 rice_df = pd.read_excel("Rice_Osmancik_Cammeo_Dataset.xlsx")
 # rice_df.describe()
 
 # Chia tap du lieu theo nghi thuc Hold-out voi ti ly 7/3
-X_train, X_test, y_train, y_test = train_test_split(rice_df.iloc[:, :-1],
-                                                    rice_df.iloc[:, -1],
+data = rice_df.iloc[:, :-1]
+target = rice_df.iloc[:, -1]
+
+X_train, X_test, y_train, y_test = train_test_split(data, target,
                                                     test_size=0.3,
                                                     random_state=100)
+
+scaler = StandardScaler()
+scaler.fit(X_train)
+X_train = scaler.transform(X_train)
+X_test = scaler.transform(X_test)
 # print(len(rice_df))
 # print(rice_df['CLASS'].value_counts())
 # print(len(X_train), len(X_test))
@@ -94,6 +102,12 @@ for k in kernel:
 SVMModel = './riceclassify/static/svm_model.sav'
 pickle.dump(svm_model[0], open(SVMModel, 'wb'))
 
+scaler.fit(data)
+data = scaler.transform(data)
+model = SVC(kernel='linear')
+model.fit(data, target)
+model.scaler = scaler
+pickle.dump(model, open('./riceclassify/static/model.sav', 'wb'))
 
 y = svm_model[0].predict([[15231.0, 525.578979492188, 229.749877929687,
                            85.0937881469727, 0.928882002830505, 15617.0, 0.572895526885986]])

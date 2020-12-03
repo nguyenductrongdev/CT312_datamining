@@ -10,6 +10,9 @@ import os
 import numpy as np
 from io import StringIO
 import json
+from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.response import Response
 # Create your views here.
 
 
@@ -27,10 +30,10 @@ def predict(request):
         req = [float(val) for val in req]
         print(req)
         filename = os.path.join(os.path.dirname(
-            __file__), 'static/svm_model.sav')
+            __file__), 'static/model.sav')
         with open(filename, 'rb') as f:
             model = pickle.load(f)
-        result = model.predict([req])
+        result = model.predict(model.scaler.transform([req]))
         return render(request, "predict.html", {"result": result[0]})
 
 
@@ -52,10 +55,11 @@ def predict_csv(request):
         dataset = pd.read_csv(dataset, sep=',')
         # print(dataset)
         filename = os.path.join(os.path.dirname(
-            __file__), 'static/svm_model.sav')
+            __file__), 'static/model.sav')
         with open(filename, 'rb') as f:
             model = pickle.load(f)
-        result = dataset.assign(CLASS=model.predict(dataset))
+        result = dataset.assign(CLASS=model.predict(
+            model.scaler.transform(dataset)))
         path = os.path.join(os.path.dirname(
             __file__), '../media/result_' + uploaded_file_url.split('/')[-1])
         # file=open(djangoSettings.STATIC_ROOT+'/game'+name+'.json','w')
@@ -92,3 +96,7 @@ def download(request, path):
                 os.path.basename(file_path)
             return response
     raise Http404
+
+# @api_view(['GET'])
+# def api(request):
+#     if request.method == 'GET':
