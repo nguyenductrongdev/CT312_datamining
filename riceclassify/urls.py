@@ -6,5 +6,5 @@ urlpatterns = [
     path('', views.index),
     path('predict', views.predict),
     path('predict_csv', views.predict_csv),
-    path('download/<path:filename>', views.download)
+    path('download/<path:path>', views.download)
 ]

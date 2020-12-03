@@ -56,10 +56,10 @@ def predict_csv(request):
         with open(filename, 'rb') as f:
             model = pickle.load(f)
         result = dataset.assign(CLASS=model.predict(dataset))
-        filename = os.path.join(os.path.dirname(
-            __file__), '../media/result.csv')
+        path = os.path.join(os.path.dirname(
+            __file__), '../media/result_' + uploaded_file_url.split('/')[-1])
         # file=open(djangoSettings.STATIC_ROOT+'/game'+name+'.json','w')
-        result.to_csv(filename)
+        result.to_csv(path)
         print(result)
         rows = []
         for i, row in result.iterrows():
@@ -78,11 +78,12 @@ def predict_csv(request):
         # result = [json.loads(json_records)]
         # context = {'d': result}
         # print(result)
-        return render(request, 'predict-csv.html', {'rows': rows})
+        return render(request, 'predict-csv.html', {'rows': rows,
+                                                    'path': path.split('/')[-1]})
 
 
-def download(request, filename):
-    file_path = os.path.join(settings.MEDIA_ROOT, filename)
+def download(request, path):
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
     if os.path.exists(file_path):
         with open(file_path, 'rb') as fh:
             response = HttpResponse(
