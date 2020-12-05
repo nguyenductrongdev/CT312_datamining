@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import Pipeline
 # Doc du lieu tu file excel
@@ -23,7 +23,7 @@ data = rice_df.iloc[:, :-1]
 target = rice_df.iloc[:, -1]
 
 # Scaling dữ liệu với phương pháp standardlization
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 
 # --------------------- Xay dung mo hinh Naive Bayes voi phan phoi Gauss
 nb_model = GaussianNB()
@@ -47,7 +47,7 @@ svm_scores = dict()
 for k in kernel:
     m = SVC(kernel=k)
     svm_model.append(m)
-    pipeline = Pipeline([('transformer', scaler), ('estimator', nb_model)])
+    pipeline = Pipeline([('transformer', scaler), ('estimator', m)])
     score = cross_val_score(pipeline, data, target, cv=15)
     svm_scores[k] = np.mean(score)
 
@@ -58,6 +58,7 @@ best_acc = max(val)
 best_kernel = key[val.index(best_acc)]
 
 print("SVM: ", best_kernel, best_acc)
+# KL: SVM co do chinh xac la 0.9288713910761153 voi kernel la poly
 
 
 # --------------------- Xay dung mo hinh cay quyet dinh
@@ -81,8 +82,8 @@ best_depth = key[val.index(best_acc)]
 print('Do sau - do chinh xac DT: ', best_depth, best_acc)
 # KQ: max_depth = 5 dem lai do chinh xac cao nhat (0.9236220472440944)
 
-# ==> Mô hình cây quyết định có độ chính xác cao nhất
-# ===> Lưu lại hình cây quyết dịnh làm mô hình dự đoán
+# ==> Mô hình SVM có độ chính xác cao nhất
+# ===> Lưu lại SVM làm mô hình dự đoán
 
 scaler.fit(data)
 data = scaler.transform(data)
