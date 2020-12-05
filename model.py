@@ -83,5 +83,10 @@ print('Do sau - do chinh xac DT: ', best_depth, best_acc)
 
 # ==> Mô hình cây quyết định có độ chính xác cao nhất
 # ===> Lưu lại hình cây quyết dịnh làm mô hình dự đoán
-DecisionTreeModel = './riceclassify/static/model.sav'
-pickle.dump(dt_model[val.index(best_acc)], open(DecisionTreeModel, 'wb'))
+
+scaler.fit(data)
+data = scaler.transform(data)
+model = dt_model[val.index(best_acc)].fit(data, target)
+model.scaler = scaler
+path = './riceclassify/static/model.sav'
+pickle.dump(model, open(path, 'wb'))
