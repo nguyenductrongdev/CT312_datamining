@@ -142,11 +142,15 @@
 
             $('form[name="frmPredictCSV"]').submit(function(event) {
                 let fileField = $('input[name="fXTest"]');
-                if (fileField.val().length === 0) {
+                let fileName = fileField.val();
+                let validExtensions = ['csv'];
+                let fileExtension = fileName.split('.').slice(-1)[0];
+                if (!validExtensions.includes(fileExtension) || fileName.length === 0) {
                     event.preventDefault();
-                    fileField.removeClass('is-valid').addClass('is-invalid');
-                } else
-                    fileField.removeClass('is-invalid').addClass('is-valid');
+                    fileField.siblings('label').css('outline', 'solid 1px red');
+                } else {
+                    fileField.siblings('label').css('outline', 'none 1px red');
+                }
             });
 
             $('input[name="fXTest"]').change(function() {

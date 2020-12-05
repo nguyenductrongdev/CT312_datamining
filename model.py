@@ -14,6 +14,7 @@ import pickle
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import Pipeline
+from sklearn import tree
 # Doc du lieu tu file excel
 rice_df = pd.read_excel("Rice_Osmancik_Cammeo_Dataset.xlsx")
 # rice_df.describe()
@@ -40,24 +41,24 @@ print('Do chinh xac trung binh NB:', nb_score_my)
 
 
 # --------------------- Xay dung mo hinh SVM
-kernel = ["linear", "poly", "rbf", "sigmoid"]
-svm_model = []
-svm_scores = dict()
-# Thu xay dung mo hinh voi kernel khac nhau
-for k in kernel:
-    m = SVC(kernel=k)
-    svm_model.append(m)
-    pipeline = Pipeline([('transformer', scaler), ('estimator', m)])
-    score = cross_val_score(pipeline, data, target, cv=15)
-    svm_scores[k] = np.mean(score)
+# kernel = ["linear", "poly", "rbf", "sigmoid"]
+# svm_model = []
+# svm_scores = dict()
+# # Thu xay dung mo hinh voi kernel khac nhau
+# for k in kernel:
+#     m = SVC(kernel=k)
+#     svm_model.append(m)
+#     pipeline = Pipeline([('transformer', scaler), ('estimator', m)])
+#     score = cross_val_score(pipeline, data, target, cv=15)
+#     svm_scores[k] = np.mean(score)
 
-# Tim kernel co do chinh xac tot nhat
-val = list(svm_scores.values())
-key = list(svm_scores.keys())
-best_acc = max(val)
-best_kernel = key[val.index(best_acc)]
+# # Tim kernel co do chinh xac tot nhat
+# val = list(svm_scores.values())
+# key = list(svm_scores.keys())
+# best_acc = max(val)
+# best_kernel = key[val.index(best_acc)]
 
-print("SVM: ", best_kernel, best_acc)
+# print("SVM: ", best_kernel, best_acc)
 # KL: SVM co do chinh xac la 0.9288713910761153 voi kernel la poly
 
 
@@ -80,6 +81,15 @@ key = list(dt_score.keys())
 best_acc = max(val)
 best_depth = key[val.index(best_acc)]
 print('Do sau - do chinh xac DT: ', best_depth, best_acc)
+
+clf = DecisionTreeClassifier(criterion='entropy', max_depth=5)
+fig, ax = plt.subplots(figsize=(30, 10))
+tree.plot_tree(
+    clf.fit(scaler.fit_transform(data), target),
+    feature_names=rice_df.columns[:-1],
+    class_names=['Cammeo', 'Osmancik'], filled=True)
+plt.savefig('tree.png')
+# plt.show()
 # KQ: max_depth = 5 dem lai do chinh xac cao nhat (0.9236220472440944)
 
 # ==> Mô hình SVM có độ chính xác cao nhất
