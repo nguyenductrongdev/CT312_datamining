@@ -26,7 +26,8 @@ SECRET_KEY = '=*&mmfy&ckeoli$u!(%tnktwlixq&bw_zmn&)agzbbpqyd(^q5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'localhost', '192.168.1.60',
+                 '127.0.0.1', '192.168.1.66', '0.0.0.0']
 
 
 # Application definition
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +126,11 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
