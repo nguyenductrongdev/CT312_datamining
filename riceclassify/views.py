@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse, Http404, JsonResponse
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, Http404, JsonResponse, HttpResponseServerError
 import pickle
 import pandas as pd
 import io
@@ -75,6 +75,7 @@ def predict_csv(request):
             model = pickle.load(f)
         result = dataset.assign(CLASS=model.predict(
             model.scaler.transform(dataset)))
+
         path = os.path.join(os.path.dirname(
             __file__), '../media/result_' + uploaded_file_url.split('/')[-1])
         # file=open(djangoSettings.STATIC_ROOT+'/game'+name+'.json','w')
@@ -96,7 +97,9 @@ def predict_csv(request):
         # result = [json.loads(json_records)]
         # context = {'d': result}
         # print(result)
-        return JsonResponse({'rows': rows, "path": path.split('/')[-1]}, safe=False)
+        res = {'rows': rows, "path": path.split('/')[-1]}
+
+        return JsonResponse(res, safe=False)
         # return render(request, 'predict-csv.html', {'rows': rows,'path': path.split('/')[-1]})
 
 

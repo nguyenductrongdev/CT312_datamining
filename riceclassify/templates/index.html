@@ -12,7 +12,7 @@
 <body>
     <header class="bg-dark text-light p-3 shadow-lg">
         <h1 class="text-center">
-            Classification of Rice Varieties Using Artificial Intelligence Methods.
+            Classification of Rice Varieties Using Artificial Intelligence Methods
         </h1>
     </header>
 
@@ -169,6 +169,9 @@
                                 </div>
 
                             </div>
+
+                        </div>
+                        <div class="container-fuild">
                             <div class="row result-row">
                                 <a href="#" class="btn btn-success btn-download d-block m-5 ml-auto w-25 disabled" download>
                                     <i class="fas fa-download"></i>
@@ -222,15 +225,6 @@
             });
 
             $('#frm .btn-api').click(function(event) {
-                /*let x = {
-                    txtArea: $('#txtArea').val(),
-                    txtPerimeter: $('#txtPerimeter').val(),
-                    txtMajorAxisLength: $('#txtMajorAxisLength').val(),
-                    txtMinorAxisLength: $('#txtMinorAxisLength').val(),
-                    txtEccentricity: $('#txtEccentricity').val(),
-                    txtConvexArea: $('#txtConvexArea').val(),
-                    txtExtent: $('#txtExtent').val(),
-                }*/
                 let txtArea = $('#txtArea').val();
                 let txtPerimeter = $('#txtPerimeter').val();
                 let txtMajorAxisLength = $('#txtMajorAxisLength').val();
@@ -279,6 +273,7 @@
             $('.btn-download').hide();
 
             $('#frmPredictCSV .btn-api').click(function() {
+
                 if ($('#frmPredictCSV input[type="file"]').val().length === 0) {
                     $('#frmPredictCSV label')
                         .css('outline', 'solid 1px red');
