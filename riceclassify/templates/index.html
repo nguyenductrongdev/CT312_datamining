@@ -279,6 +279,14 @@
             $('.btn-download').hide();
 
             $('#frmPredictCSV .btn-api').click(function() {
+                if ($('#frmPredictCSV input[type="file"]').val().length === 0) {
+                    $('#frmPredictCSV label')
+                        .css('outline', 'solid 1px red');
+                    return;
+                }
+                $('#frmPredictCSV label')
+                    .css('outline', 'solid 1px green');
+
                 let fd = new FormData($('#frmPredictCSV')[0]);
                 let file = $('#frmPredictCSV input[type="file"]')[0].files[0];
                 $.ajax({
