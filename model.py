@@ -152,7 +152,7 @@ print('best_depth: ', best_depth, ' -- best_acc: ', best_acc,
 #   Recall (Cameo, Omancik) = 90.33, 93.77
 
 # Vẽ cây quyết định để quan sát và lưu lại
-clf = DecisionTreeClassifier(criterion='entropy')
+clf = DecisionTreeClassifier(criterion='entropy', max_depth=best_depth)
 fig, ax = plt.subplots(figsize=(200, 100))
 plot_tree(clf.fit(scaler.fit_transform(data), target),
           feature_names=rice_df.columns[:-1],
