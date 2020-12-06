@@ -53,7 +53,7 @@
                                     <!-- <h1 class="text-center text-info">Enter infomation</h1> -->
                                     <form class="shadow-lg p-5" action="predict" method="POST" id="frm" novalidate>
                                         <div class="row">
-                                            <div class="col-6">
+                                            <div class="col-md-6">
                                                 {% csrf_token %}
                                                 <div class="form-group">
                                                     <label for="txtArea">Area
@@ -86,7 +86,7 @@
                                                     <small id="arenaHelp" class="form-text text-muted">The shortest line that can be drawn on the rice grain, i.e. the small axis distance, gives.</small>
                                                 </div>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="txtEccentricity">Eccentricity
                                                         <i class="fas fa-question-circle btn-detail"></i>
@@ -158,7 +158,7 @@
                                         <div class="row w-100">
                                             <div class="col-6">
                                                 {% csrf_token %}
-                                                <label for="fXTest" class="custom-file-label w-100">File csv</label>
+                                                <label for="fXTest" class="custom-file-label form-control w-100">File csv</label>
                                                 <input type="file" class="custom-file-input" name="fXTest" />
                                             </div>
                                             <div class="col-6">
@@ -169,7 +169,7 @@
                                 </div>
 
                             </div>
-                            <div class="row">
+                            <div class="row result-row">
                                 <a href="#" class="btn btn-success btn-download d-block m-5 ml-auto w-25 disabled" download>
                                     <i class="fas fa-download"></i>
                                 </a>
@@ -284,6 +284,9 @@
                         .css('outline', 'solid 1px red');
                     return;
                 }
+                let spinner = $('<div class="spinner-border"></div>');
+                let download = $('<i class="fas fa-download"></i>');
+                $('.btn-download').html(spinner);
                 $('#frmPredictCSV label')
                     .css('outline', 'solid 1px green');
 
@@ -296,6 +299,7 @@
                     contentType: false,
                     processData: false,
                     success: function(res) {
+                        $('.btn-download').html(download);
                         $('#csv-predict-field').toggle();
                         $('.btn-download')
                             //.show()
