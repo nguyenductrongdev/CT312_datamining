@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 import pickle
 import pandas as pd
 import io
@@ -10,10 +10,25 @@ import os
 import numpy as np
 from io import StringIO
 import json
-from rest_framework.decorators import api_view
+from rest_framework.decorators import APIView
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework import routers, serializers, viewsets
+
 # Create your views here.
+
+
+def predict(request):
+    if request.method == "GET":
+        req = list(request.GET.values())
+        req = [float(val) for val in req]
+        print(req)
+        filename = os.path.join(os.path.dirname(
+            __file__), 'static/model.sav')
+        with open(filename, 'rb') as f:
+            model = pickle.load(f)
+        result = model.predict(model.scaler.transform([req])).tolist()
+        return JsonResponse(result, safe=False)
 
 
 def index(request):
@@ -24,17 +39,17 @@ def index(request):
         return render(request, a)
 
 
-def predict(request):
-    if request.method == "POST":
-        req = list(request.POST.values())[1:]
-        req = [float(val) for val in req]
-        print(req)
-        filename = os.path.join(os.path.dirname(
-            __file__), 'static/model.sav')
-        with open(filename, 'rb') as f:
-            model = pickle.load(f)
-        result = model.predict(model.scaler.transform([req]))
-        return render(request, "predict.html", {"result": result[0]})
+# def predict(request):
+#     if request.method == "POST":
+#         req = list(request.POST.values())[1:]
+#         req = [float(val) for val in req]
+#         print(req)
+#         filename = os.path.join(os.path.dirname(
+#             __file__), 'static/model.sav')
+#         with open(filename, 'rb') as f:
+#             model = pickle.load(f)
+#         result = model.predict(model.scaler.transform([req]))
+#         return render(request, "predict.html", {"result": result[0]})
 
 
 def predict_csv(request):
@@ -64,7 +79,6 @@ def predict_csv(request):
             __file__), '../media/result_' + uploaded_file_url.split('/')[-1])
         # file=open(djangoSettings.STATIC_ROOT+'/game'+name+'.json','w')
         result.to_csv(path)
-        print(result)
         rows = []
         for i, row in result.iterrows():
             rows.append({
@@ -82,8 +96,8 @@ def predict_csv(request):
         # result = [json.loads(json_records)]
         # context = {'d': result}
         # print(result)
-        return render(request, 'predict-csv.html', {'rows': rows,
-                                                    'path': path.split('/')[-1]})
+        return JsonResponse({'rows': rows, "path": path.split('/')[-1]}, safe=False)
+        # return render(request, 'predict-csv.html', {'rows': rows,'path': path.split('/')[-1]})
 
 
 def download(request, path):
