@@ -26,7 +26,8 @@
               </button>
                 </div>
                 <div class="modal-body" id="result-container">
-                    ...
+                    {% comment %} ... {% endcomment %}
+                    <div class="spinner-border"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -40,7 +41,7 @@
             <div class="col-12">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link text-center w-50" id="nav-profile-tab" data-toggle="tab" href="#nav-form" role="tab" aria-controls="nav-profile" aria-selected="false">Form</a>
+                        <a class="nav-item nav-link text-center w-50 active" id="nav-profile-tab" data-toggle="tab" href="#nav-form" role="tab" aria-controls="nav-profile" aria-selected="false">Form</a>
                         <a class="nav-item nav-link text-center w-50" id="nav-contact-tab" data-toggle="tab" href="#nav-csv" role="tab" aria-controls="nav-contact" aria-selected="false">.CSV</a>
                     </div>
                 </nav>
@@ -132,8 +133,8 @@
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle">Thông báo</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
                                             </div>
                                             <div class="modal-body">
                                                 ...
@@ -159,7 +160,7 @@
                                             <div class="col-6">
                                                 {% csrf_token %}
                                                 <label for="fXTest" class="custom-file-label form-control w-100">File csv</label>
-                                                <input type="file" class="custom-file-input" name="fXTest" />
+                                                <input type="file" class="custom-file-input" name="fXTest" id="fXTest" accept=".csv" />
                                             </div>
                                             <div class="col-6">
                                                 <button type="button" class="btn btn-primary form-control w-100 btn-api">Predict</button>
@@ -209,6 +210,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
     <script>
         $(function() {
             $('small').addClass('invisible');
@@ -224,7 +229,7 @@
                     .removeClass('is-invalid');
             });
 
-            $('#frm .btn-api').click(function(event) {
+             $('#frm .btn-api').click(function(event) {
                 let txtArea = $('#txtArea').val();
                 let txtPerimeter = $('#txtPerimeter').val();
                 let txtMajorAxisLength = $('#txtMajorAxisLength').val();
@@ -267,11 +272,13 @@
 
                     }
                 );
-            });
+            }); 
+
 
             $('#csv-predict-field').hide();
             $('.btn-download').hide();
 
+            /*
             $('#frmPredictCSV .btn-api').click(function() {
 
                 if ($('#frmPredictCSV input[type="file"]').val().length === 0) {
@@ -319,8 +326,59 @@
                         }
                     }
                 });
-            });
+            }); 
+            */
 
+            $('#frmPredictCSV .btn-api').click(async function() {
+                console.log('bugforfun');
+                const spinner = $('<div class="spinner-border"></div>');
+                const download = $('<i class="fas fa-download"></i>');
+                $('.btn-download').html(spinner);
+                Papa.parse($('#frmPredictCSV #fXTest')[0].files[0], {
+                    download: true,
+                    header: false,
+                    complete: async function(result) {
+                        // Remote title of .csv file
+                        //const data = Array.from(result.data).slice(1, -1);
+                        const data = Array.from(result.data).slice(1, -1);
+                        let classes = [];
+                        let tbodyContent = '';
+                        for(let row of data) {
+                            let [
+                                area,
+                                perimeter,
+                                majorAxisLength,
+                                minorAxisLength,
+                                eccentricity,
+                                convexArea,
+                                extent,
+                            ] = row;
+                            let response = await axios.get(
+                                `/predict?txtArea=${area}&txtPerimeter=${perimeter}&txtMajorAxisLength=${majorAxisLength}&txtMinorAxisLength=${minorAxisLength}&txtEccentricity=${eccentricity}&txtConvexArea=${convexArea}&txtExtent=${extent}`
+                            );
+                            let rowClass = response.data[0];
+                            classes.push(rowClass);
+                            // Append tbodyContent include data and class each row
+                            tbodyContent += "<tr>";
+                            tbodyContent += `<td>${area}</td>`;
+                            tbodyContent += `<td>${perimeter}</td>`;
+                            tbodyContent += `<td>${majorAxisLength}</td>`;
+                            tbodyContent += `<td>${minorAxisLength}</td>`;
+                            tbodyContent += `<td>${eccentricity}</td>`;
+                            tbodyContent += `<td>${convexArea}</td>`;
+                            tbodyContent += `<td>${extent}</td>`;
+                            tbodyContent += `<td>${rowClass}</td>`;
+                            tbodyContent += "</tr>";
+                            console.log(tbodyContent);
+                        }
+                        $('.result-csv').html(tbodyContent);
+                        $('#csv-predict-field').toggle();
+                        $('.btn-download').html(download);
+                    }
+                });
+                // Presenting perdict result
+            });
+            
             $('.btn-predict').click(function() {
                 $('.btn-download').removeClass('disabled');
             });
@@ -338,6 +396,7 @@
                 }
             });
 
+            // Change file name place holder when re-choose predict file
             $('input[name="fXTest"]').change(function() {
                 let sep = "/";
                 if ($(this).val().includes('\\')) sep = '\\';
