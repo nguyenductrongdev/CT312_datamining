@@ -242,10 +242,8 @@
                     let val = $(this).val();
                     console.log(val)
                     if (val.length === 0 || isNaN(val)) {
-                        console.log('sai');
                         $(this).removeClass('is-valid').addClass('is-invalid');
                     } else {
-                        console.log('dung');
                         $(this).removeClass('is-invalid').addClass('is-valid');
                     }
                 });
@@ -261,12 +259,11 @@
                     return;
                 }
                 $.get(
-                    `/predict?txtArea=${txtArea}&txtPerimeter=${txtPerimeter}&txtMajorAxisLength=${txtMajorAxisLength}&txtMinorAxisLength=${txtMinorAxisLength}&txtEccentricity=${txtEccentricity}&txtConvexArea=${txtConvexArea}&txtExtent=${txtExtent}`,
+                    `/predict_rice?area=${txtArea}&perimeter=${txtPerimeter}&majoraxis=${txtMajorAxisLength}&minoraxis=${txtMinorAxisLength}&eccentricity=${txtEccentricity}&convexarea=${txtConvexArea}&extent=${txtExtent}`,
                     function(data, status) {
-                        console.log(data);
                         $('#result-container').html(
                             `<div class="alert alert-success text-center" role="alert">
-                                ${data}
+                                ${data.label}
                             </div>`
                         );
 
@@ -274,60 +271,8 @@
                 );
             }); 
 
-
             $('#csv-predict-field').hide();
             $('.btn-download').hide();
-
-            /*
-            $('#frmPredictCSV .btn-api').click(function() {
-
-                if ($('#frmPredictCSV input[type="file"]').val().length === 0) {
-                    $('#frmPredictCSV label')
-                        .css('outline', 'solid 1px red');
-                    return;
-                }
-                let spinner = $('<div class="spinner-border"></div>');
-                let download = $('<i class="fas fa-download"></i>');
-                $('.btn-download').html(spinner);
-                $('#frmPredictCSV label')
-                    .css('outline', 'solid 1px green');
-
-                let fd = new FormData($('#frmPredictCSV')[0]);
-                let file = $('#frmPredictCSV input[type="file"]')[0].files[0];
-                $.ajax({
-                    url: 'predict_csv',
-                    type: "post",
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    success: function(res) {
-                        $('.btn-download').html(download);
-                        $('#csv-predict-field').toggle();
-                        $('.btn-download')
-                            //.show()
-                            .attr('href', `/download/${res.path}`)
-                            .removeClass('disabled');
-                        console.log(res)
-                        $('.result-csv').empty();
-                        for (let row of res.rows) {
-                            $('.result-csv').append(
-                                `<tr>
-                                    <td>${row.AREA}</td>
-                                    <td>${row.PERIMETER}</td>
-                                    <td>${row.MAJORAXIS}</td>
-                                    <td>${row.MINORAXIS}</td>
-                                    <td>${row.ECCENTRICITY}</td>
-                                    <td>${row.CONVEX_AREA}</td>
-                                    <td>${row.EXTENT}</td>
-                                    <td>${row.CLASS}</td>
-                                        
-                                </tr>`
-                            );
-                        }
-                    }
-                });
-            }); 
-            */
 
             $('#frmPredictCSV .btn-api').click(async function() {
                 console.log('bugforfun');
@@ -339,46 +284,52 @@
                     header: false,
                     complete: async function(result) {
                         // Remote title of .csv file
-                        //const data = Array.from(result.data).slice(1, -1);
-                        const data = Array.from(result.data).slice(1, -1);
+                        $('.btn-download').html(download);
+                        $('#csv-predict-field').toggle();
+                        const data = Array.from(result.data).slice(1, 300);
                         let classes = [];
                         let tbodyContent = '';
+
+                        let areas = [];
+                        let perimeters = [];
+                        let majorAxisLengths = [];
+                        let minorAxisLengths = [];
+                        let eccentricitys = [];
+                        let convexAreas = [];
+                        let extents = [];
                         for(let row of data) {
-                            let [
-                                area,
-                                perimeter,
-                                majorAxisLength,
-                                minorAxisLength,
-                                eccentricity,
-                                convexArea,
-                                extent,
-                            ] = row;
-                            let response = await axios.get(
-                                `/predict?txtArea=${area}&txtPerimeter=${perimeter}&txtMajorAxisLength=${majorAxisLength}&txtMinorAxisLength=${minorAxisLength}&txtEccentricity=${eccentricity}&txtConvexArea=${convexArea}&txtExtent=${extent}`
-                            );
-                            let rowClass = response.data[0];
-                            classes.push(rowClass);
-                            // Append tbodyContent include data and class each row
-                            tbodyContent += "<tr>";
-                            tbodyContent += `<td>${area}</td>`;
-                            tbodyContent += `<td>${perimeter}</td>`;
-                            tbodyContent += `<td>${majorAxisLength}</td>`;
-                            tbodyContent += `<td>${minorAxisLength}</td>`;
-                            tbodyContent += `<td>${eccentricity}</td>`;
-                            tbodyContent += `<td>${convexArea}</td>`;
-                            tbodyContent += `<td>${extent}</td>`;
-                            tbodyContent += `<td>${rowClass}</td>`;
-                            tbodyContent += "</tr>";
-                            console.log(tbodyContent);
+                            areas.push(row[0]);
+                            perimeters.push(row[1]);
+                            majorAxisLengths.push(row[2]);
+                            minorAxisLengths.push(row[3]);
+                            eccentricitys.push(row[4]);
+                            convexAreas.push(row[5]);
+                            extents.push(row[6]);
                         }
-                        $('.result-csv').html(tbodyContent);
-                        $('#csv-predict-field').toggle();
-                        $('.btn-download').html(download);
+                        let response = await axios.get(
+                            `/predict_rice?area=${areas.join(',')}&perimeter=${perimeters.join(',')}&majoraxis=${majorAxisLengths.join(',')}&minoraxis=${minorAxisLengths.join(',')}&eccentricity=${eccentricitys.join(',')}&convexarea=${convexAreas.join(',')}&extent=${extents.join(',')}`
+                        );
+                        classes = response.data.label;
+                        let i=0;
+                        for(let row of data) {
+                            $('.result-csv').append(
+                                `<tr>
+                                    <td>${row[0]}</td>
+                                    <td>${row[1]}</td>
+                                    <td>${row[2]}</td>
+                                    <td>${row[3]}</td>
+                                    <td>${row[4]}</td>
+                                    <td>${row[5]}</td>
+                                    <td>${row[6]}</td>
+                                    <td>${classes[i++]}</td>
+                                </tr>`
+                            );
+                        }
+
                     }
                 });
-                // Presenting perdict result
             });
-            
+
             $('.btn-predict').click(function() {
                 $('.btn-download').removeClass('disabled');
             });
