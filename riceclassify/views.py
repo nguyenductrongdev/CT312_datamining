@@ -36,8 +36,9 @@ def predict_rice(request):
         data = pd.DataFrame(data=data, columns=columns)
         data = data.astype('float')
         if not None in data:
-            model_path = 'riceclassify/static/model.sav'
-            classifier = pickle.load(open(model_path, 'rb'))
+            # model_path = 'riceclassify/static/model.sav'
+            # classifier = pickle.load(open(model_path, 'rb'))
+            classifier = getattr(settings, 'MODEL')
             label = classifier.predict(classifier.scaler.transform(data))
             return_data = {
                 'error': '0',
@@ -110,10 +111,11 @@ def predict_csv(request):
         # print(dataset)
         filename = os.path.join(os.path.dirname(
             __file__), 'static/model.sav')
-        with open(filename, 'rb') as f:
-            model = pickle.load(f)
-        result = dataset.assign(CLASS=model.predict(
-            model.scaler.transform(dataset)))
+        # with open(filename, 'rb') as f:
+        #     model = pickle.load(f)
+        classifier = getattr(settings, 'MODEL')
+        result = dataset.assign(CLASS=classifier.predict(
+            classifier.scaler.transform(dataset)))
 
         path = os.path.join(os.path.dirname(
             __file__), '../media/result_' + uploaded_file_url.split('/')[-1])

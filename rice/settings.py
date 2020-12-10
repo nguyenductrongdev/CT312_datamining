@@ -129,6 +129,8 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+import pickle
+MODEL = pickle.load(open('riceclassify/static/model.sav', 'rb'))
 
 # Heroku: Update database configuration from $DATABASE_URL.
 import dj_database_url
