@@ -15,33 +15,34 @@ from rest_framework.response import Response
 
 # Create your views here.
 
+
 @api_view(['GET'])
 def predict_rice(request):
+    print(request.GET)
     try:
-        area = request.GET.get('area', None).split(',')
-        perimeter = request.GET.get('perimeter', None).split(',')
-        majoraxis = request.GET.get('majoraxis', None).split(',')
-        minoraxis = request.GET.get('minoraxis', None).split(',')
-        eccentricity = request.GET.get('eccentricity', None).split(',')
-        convexarea = request.GET.get('convexarea', None).split(',')
-        extent = request.GET.get('extent', None).split(',')
+        area = request.GET.get('area').split(',')
+        perimeter = request.GET.get('perimeter').split(',')
+        majoraxis = request.GET.get('majoraxis').split(',')
+        minoraxis = request.GET.get('minoraxis').split(',')
+        eccentricity = request.GET.get('eccentricity').split(',')
+        convexarea = request.GET.get('convexarea').split(',')
+        extent = request.GET.get('extent').split(',')
         data = np.array([area, perimeter, majoraxis, minoraxis,
-                    eccentricity, convexarea, extent])
+                         eccentricity, convexarea, extent])
         data = data.T
         print(data)
-        columns = ['area', 'perimeter','majoraxis', 'minoraxis',
-                    'eccentricity', 'convexarea', 'extent']
+        columns = ['area', 'perimeter', 'majoraxis', 'minoraxis',
+                   'eccentricity', 'convexarea', 'extent']
         data = pd.DataFrame(data=data, columns=columns)
         data = data.astype('float')
-        print(data)
         if not None in data:
             model_path = 'riceclassify/static/model.sav'
             classifier = pickle.load(open(model_path, 'rb'))
             label = classifier.predict(classifier.scaler.transform(data))
             return_data = {
-                    'error': '0',
-                    'message': 'Successful',
-                    'label': label
+                'error': '0',
+                'message': 'Successful',
+                'label': label
             }
         else:
             return_data = {

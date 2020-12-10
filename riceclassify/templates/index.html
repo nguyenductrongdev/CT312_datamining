@@ -52,38 +52,38 @@
                                 <div class="col-12 mx-auto">
                                     <!--  -->
                                     <!-- <h1 class="text-center text-info">Enter infomation</h1> -->
-                                    <form class="shadow-lg p-5" action="predict" method="POST" id="frm" novalidate>
+                                    <form class="shadow-lg p-5" action="predict_rice" method="POST" id="frm" novalidate>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 {% csrf_token %}
                                                 <div class="form-group">
-                                                    <label for="txtArea">Area
+                                                    <label for="area">Area
                                                         <i class="fas fa-question-circle btn-detail"></i>
                                                     </label>
-                                                    <input type="text" class="form-control" id="txtArea" aria-describedby="emailHelp" name="txtArea">
+                                                    <input type="text" class="form-control" id="area" aria-describedby="emailHelp" name="area">
                                                     <small id="arenaHelp" class="form-text text-muted">Returns the number of pixels within the boundaries of the rice grain.</small>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="txtPerimeter">Perimeter
+                                                    <label for="perimeter">Perimeter
                                                         <i class="fas fa-question-circle btn-detail"></i>
                                                     </label>
-                                                    <input type="text" class="form-control" id="txtPerimeter" name="txtPerimeter">
+                                                    <input type="text" class="form-control" id="perimeter" name="perimeter">
                                                     <small id="arenaHelp" class="form-text text-muted">Calculates the circumference  by calculating the distance between pixels  around the boundaries of the rice grain.</small>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="txtMajorAxisLength">Major Axis Length
+                                                    <label for="majoraxis">Major Axis Length
                                                         <i class="fas fa-question-circle btn-detail"></i>
                                                     </label>
-                                                    <input type="text" class="form-control" id="txtMajorAxisLength" name="txtMajorAxisLength">
+                                                    <input type="text" class="form-control" id="majoraxis" name="majoraxis">
                                                     <small id="arenaHelp" class="form-text text-muted">The longest line that  can be drawn on the
                                         rice grain,
                                         i.e. the main axis distance, gives.</small>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="txtMinorAxisLength">Minor Axis Length
+                                                    <label for="minoraxis">Minor Axis Length
                                                         <i class="fas fa-question-circle btn-detail"></i>
                                                     </label>
-                                                    <input type="text" class="form-control" id="txtMinorAxisLength" name="txtMinorAxisLength">
+                                                    <input type="text" class="form-control" id="minoraxis" name="minoraxis">
                                                     <small id="arenaHelp" class="form-text text-muted">The shortest line that can be drawn on the rice grain, i.e. the small axis distance, gives.</small>
                                                 </div>
                                             </div>
@@ -98,21 +98,21 @@
                                                     moments as the rice grain, is.</small>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="txtConvexArea">
+                                                    <label for="convexarea">
                                                         Convex Area
                                                         <i class="fas fa-question-circle btn-detail"></i>
                                                     </label>
-                                                    <input type="text" class="form-control" id="txtConvexArea" name="txtConvexArea">
+                                                    <input type="text" class="form-control" id="convexarea" name="convexarea">
                                                     <small id="arenaHelp" class="form-text text-muted">Returns the pixel count of the smallest
                                                     convex shell
                                                     of the region formed by the rice grain.</small>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="txtExtent">
+                                                    <label for="extent">
                                                         Extent
                                                         <i class="fas fa-question-circle btn-detail"></i>
                                                     </label>
-                                                    <input type="text" class="form-control" id="txtExtent" name="txtExtent">
+                                                    <input type="text" class="form-control" id="extent" name="extent">
                                                     <small id="arenaHelp" class="form-text text-muted">Returns the ratio of the regionformed by the rice grain to the bounding box pixels.</small>
                                                 </div>
                                             </div>
@@ -122,7 +122,8 @@
                                                 <button type="reset" class="btn btn-secondary form-control">Reset</button>
                                             </div>
                                             <div class="col-6">
-                                                <button type="button" class="btn btn-primary form-control btn-api" data-toggle="modal" data-target="#modalCenter">Predict</button>
+                                                <button type="button" class="btn btn-primary form-control btn-api" data-toggle="modal" data-target="#modalCenter">Predict</button> {% comment %} <button class="btn btn-primary form-control btn-api" data-toggle="modal"
+                                                    data-target="#modalCenter">Predict</button> {% endcomment %}
                                             </div>
                                         </div>
                                     </form>
@@ -210,7 +211,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
@@ -229,14 +230,15 @@
                     .removeClass('is-invalid');
             });
 
-             $('#frm .btn-api').click(function(event) {
-                let txtArea = $('#txtArea').val();
-                let txtPerimeter = $('#txtPerimeter').val();
-                let txtMajorAxisLength = $('#txtMajorAxisLength').val();
-                let txtMinorAxisLength = $('#txtMinorAxisLength').val();
+
+            $('#frm .btn-api').click(function(event) {
+                let area = $('#area').val();
+                let perimeter = $('#perimeter').val();
+                let majoraxis = $('#majoraxis').val();
+                let minoraxis = $('#minoraxis').val();
                 let txtEccentricity = $('#txtEccentricity').val();
-                let txtConvexArea = $('#txtConvexArea').val();
-                let txtExtent = $('#txtExtent').val();
+                let convexarea = $('#convexarea').val();
+                let extent = $('#extent').val();
 
                 $.each($('#frm input'), function() {
                     let val = $(this).val();
@@ -248,9 +250,9 @@
                     }
                 });
 
-                if (txtArea.length == 0 || txtPerimeter.length == 0 || txtMajorAxisLength.length == 0 ||
-                    txtMinorAxisLength.length == 0 || txtEccentricity.length == 0 ||
-                    txtConvexArea.length == 0 || txtExtent.length == 0) {
+                if (area.length == 0 || perimeter.length == 0 || majoraxis.length == 0 ||
+                    minoraxis.length == 0 || txtEccentricity.length == 0 ||
+                    convexarea.length == 0 || extent.length == 0) {
                     $('#result-container').html(
                         `<div class="alert alert-warning text-center" role="alert">
                             Vui lòng điền đầy đủ thông tin
@@ -259,8 +261,9 @@
                     return;
                 }
                 $.get(
-                    `/predict_rice?area=${txtArea}&perimeter=${txtPerimeter}&majoraxis=${txtMajorAxisLength}&minoraxis=${txtMinorAxisLength}&eccentricity=${txtEccentricity}&convexarea=${txtConvexArea}&extent=${txtExtent}`,
+                    `/predict_rice?format=json&area=${area}&perimeter=${perimeter}&majoraxis=${majoraxis}&minoraxis=${minoraxis}&eccentricity=${txtEccentricity}&convexarea=${convexarea}&extent=${extent}`,
                     function(data, status) {
+                        console.log(data);
                         $('#result-container').html(
                             `<div class="alert alert-success text-center" role="alert">
                                 ${data.label}
@@ -269,15 +272,61 @@
 
                     }
                 );
-            }); 
+            });
+            //
+            $('#frmPredictCSV .btn-api').click(function(event) {
+                let fd = new FormData($('#frmPredictCSV')[0]);
+                let resultContent = '';
+                const spinner = $('<div class="spinner-border"></div>');
+                const download = $('<i class="fas fa-download"></i>');
+                $('.btn-download').html(spinner);
+                $.ajax({
+                    url: 'predict_csv',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: function(res) {
+                        console.log(res);
+                        $('.btn-download').html(download);
+                        let rows = Array.from(res.rows);
+                        //console.log(rows.length);
+
+                        //rows = rows.slice(0, -1);
+                        //return;
+                        for (let row of rows) {
+                            resultContent += `<tr>`;
+                            resultContent += `<td>${row.AREA}</td>`;
+                            resultContent += `<td>${row.PERIMETER}</td>`;
+                            resultContent += `<td>${row.MAJORAXIS}</td>`;
+                            resultContent += `<td>${row.MINORAXIS}</td>`;
+                            resultContent += `<td>${row.ECCENTRICITY}</td>`;
+                            resultContent += `<td>${row.CONVEX_AREA}</td>`;
+                            resultContent += `<td>${row.EXTENT}</td>`;
+                            resultContent += `<td>${row.CLASS}</td>`;
+                            resultContent += `</tr>`;
+
+                        }
+
+                        $('.result-csv').html(resultContent);
+                        $('#csv-predict-field').show();
+                        $('.btn-download')
+                            .attr('href', `download/${res.path}`)
+                            .removeClass('disabled');
+                        //console.log(resultContent);
+                    }
+                });
+
+            });
 
             $('#csv-predict-field').hide();
             $('.btn-download').hide();
 
+            /*
+            // Old
             $('#frmPredictCSV .btn-api').click(async function() {
                 console.log('bugforfun');
-                const spinner = $('<div class="spinner-border"></div>');
-                const download = $('<i class="fas fa-download"></i>');
+                
                 $('.btn-download').html(spinner);
                 Papa.parse($('#frmPredictCSV #fXTest')[0].files[0], {
                     download: true,
@@ -286,7 +335,7 @@
                         // Remote title of .csv file
                         $('.btn-download').html(download);
                         $('#csv-predict-field').toggle();
-                        const data = Array.from(result.data).slice(1, 300);
+                        const data = Array.from(result.data).slice(1, -1);
                         let classes = [];
                         let tbodyContent = '';
 
@@ -297,7 +346,7 @@
                         let eccentricitys = [];
                         let convexAreas = [];
                         let extents = [];
-                        for(let row of data) {
+                        for (let row of data) {
                             areas.push(row[0]);
                             perimeters.push(row[1]);
                             majorAxisLengths.push(row[2]);
@@ -307,11 +356,12 @@
                             extents.push(row[6]);
                         }
                         let response = await axios.get(
-                            `/predict_rice?area=${areas.join(',')}&perimeter=${perimeters.join(',')}&majoraxis=${majorAxisLengths.join(',')}&minoraxis=${minorAxisLengths.join(',')}&eccentricity=${eccentricitys.join(',')}&convexarea=${convexAreas.join(',')}&extent=${extents.join(',')}`
+                            `/predict_rice?format=json&area=${areas.join(',')}&perimeter=${perimeters.join(',')}&majoraxis=${majorAxisLengths.join(',')}&minoraxis=${minorAxisLengths.join(',')}&eccentricity=${eccentricitys.join(',')}&convexarea=${convexAreas.join(',')}&extent=${extents.join(',')}`
                         );
+                        console.log(response)
                         classes = response.data.label;
-                        let i=0;
-                        for(let row of data) {
+                        let i = 0;
+                        for (let row of data) {
                             $('.result-csv').append(
                                 `<tr>
                                     <td>${row[0]}</td>
@@ -329,6 +379,7 @@
                     }
                 });
             });
+            */
 
             $('.btn-predict').click(function() {
                 $('.btn-download').removeClass('disabled');
